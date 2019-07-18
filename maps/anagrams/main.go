@@ -13,38 +13,38 @@ import (
 // Complete the sherlockAndAnagrams function below.
 func sherlockAndAnagrams(s string) int {
 	substrings := findSubstrings(s)
-	sortedCharsOccurrenceMap := map[string]int{}
+	sortedFormCounts := map[string]int{}
 	for _, sub := range substrings {
-		cnt, _ := sortedCharsOccurrenceMap[sub.sortedRunes()]
-		sortedCharsOccurrenceMap[sub.sortedRunes()] = cnt + 1
+		cnt, _ := sortedFormCounts[sub.sortedForm()]
+		sortedFormCounts[sub.sortedForm()] = cnt + 1
 	}
 	sum := 0
-	for _, occurrenceCnt := range sortedCharsOccurrenceMap {
-		sum += pairCountForSortedRune(occurrenceCnt)
+	for _, sortedFormCnt := range sortedFormCounts {
+		sum += choose2From(sortedFormCnt)
 	}
 	return sum
 }
 
-func pairCountForSortedRune(totalCount int) int {
+func choose2From(totalCount int) int {
 	return totalCount * (totalCount - 1) / 2
 }
 
 type SubString struct {
 	StartIndex int
-	Runes      []rune
+	Chars      []rune
 }
 
 func (ss SubString) String() string {
-	return fmt.Sprintf("(start=%d string=%s)", ss.StartIndex, string(ss.Runes))
+	return fmt.Sprintf("(start=%d string=%s)", ss.StartIndex, string(ss.Chars))
 }
 
-func (s SubString) sortedRunes() string {
-	sortedRunes := []rune{}
-	sortedRunes = append(sortedRunes, s.Runes...)
-	sort.Slice(sortedRunes, func(i, j int) bool {
-		return sortedRunes[i] < sortedRunes[j]
+func (s SubString) sortedForm() string {
+	sortedChars := []rune{}
+	sortedChars = append(sortedChars, s.Chars...)
+	sort.Slice(sortedChars, func(i, j int) bool {
+		return sortedChars[i] < sortedChars[j]
 	})
-	return string(sortedRunes)
+	return string(sortedChars)
 }
 
 func findSubstrings(s string) []SubString {
@@ -62,7 +62,7 @@ func findSubstringsTillLen(originalString []rune, length int) map[int][]SubStrin
 		for index, char := range originalString {
 			substrings = append(substrings, SubString{
 				StartIndex: index,
-				Runes:      []rune{char},
+				Chars:      []rune{char},
 			})
 		}
 		return map[int][]SubString{1: substrings}
@@ -71,13 +71,13 @@ func findSubstringsTillLen(originalString []rune, length int) map[int][]SubStrin
 	prevLenSubstrings := result[length-1]
 	result[length] = []SubString{}
 	for _, subStr := range prevLenSubstrings {
-		newCharIndex := subStr.StartIndex + len(subStr.Runes)
+		newCharIndex := subStr.StartIndex + len(subStr.Chars)
 		if newCharIndex >= len(originalString) {
 			continue
 		}
 		result[length] = append(result[length], SubString{
 			StartIndex: subStr.StartIndex,
-			Runes:      append(subStr.Runes, originalString[newCharIndex]),
+			Chars:      append(subStr.Chars, originalString[newCharIndex]),
 		})
 	}
 	return result
