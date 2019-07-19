@@ -5,29 +5,55 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
+func revert(input []int) []int {
+	result := make([]int, len(input))
+	for index, val := range input {
+		result[len(input)-index-1] = val
+	}
+	return result
+}
+
 // Complete the countTriplets function below.
 func countTriplets(arr []int64, r int64) int64 {
-	valueIndexMap := map[int64][]int{}
+	valueAscIndexMap := map[int64][]int{}
 	for index, val := range arr {
-		indices, _ := valueIndexMap[val]
-		valueIndexMap[val] = append(indices, index)
+		indices, _ := valueAscIndexMap[val]
+		valueAscIndexMap[val] = append(indices, index)
 	}
+	valueDescIndexMap := map[int64][]int{}
+	for num, indices := range valueAscIndexMap {
+		valueDescIndexMap[num] = revert(indices)
+	}
+
 	var tripletsCnt int64 = 0
-	for val, indices := range valueIndexMap {
-		nextIndices, _ := valueIndexMap[val*r]
-		nextNextIndices, _ := valueIndexMap[val*r*r]
-		for index := range indices {
-			for _, nextIndex := range nextIndices {
-				for _, nextNextIndex := range nextNextIndices {
-					if index < nextIndex && nextIndex < nextNextIndex {
-						tripletsCnt++
-					}
-				}
+	for val, indices := range valueAscIndexMap {
+		if val%r != 0 {
+			continue
+		}
+		for _, index := range indices {
+			nextNumIndices, _ := valueAscIndexMap[val*r]
+			firstRight := sort.Search(len(nextNumIndices), func(i int) bool {
+				return nextNumIndices[i] > index
+			})
+			if firstRight < 0 {
+				continue
 			}
+			lenRight := len(nextNumIndices) - firstRight
+
+			prevNumIndices, _ := valueDescIndexMap[val/r]
+			lastLeft := sort.Search(len(prevNumIndices), func(i int) bool {
+				return prevNumIndices[i] < index
+			})
+			if lastLeft < 0 {
+				continue
+			}
+			lenLeft := len(prevNumIndices) - lastLeft
+			tripletsCnt += int64(lenLeft * lenRight)
 		}
 
 	}
