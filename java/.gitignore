@@ -1,27 +1,6 @@
 
-# Created by https://www.gitignore.io/api/go,linux,macos,windows,intellij,intellij+all,intellij+iml
-# Edit at https://www.gitignore.io/?templates=go,linux,macos,windows,intellij,intellij+all,intellij+iml
-
-### Go ###
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-### Go Patch ###
-/vendor/
-/Godeps/
+# Created by https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all,intellij+iml
+# Edit at https://www.gitignore.io/?templates=java,linux,macos,windows,intellij,intellij+all,intellij+iml
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -207,6 +186,31 @@ modules.xml
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
 
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
 ### Linux ###
 *~
 
@@ -276,6 +280,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/go,linux,macos,windows,intellij,intellij+all,intellij+iml
-
-target/
+# End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all,intellij+iml
