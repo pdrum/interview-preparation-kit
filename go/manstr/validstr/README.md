@@ -1,0 +1,2 @@
+Solution of [Sherlock and valid string](https://www.hackerrank.com/challenges/sherlock-and-valid-string?h_l=interview&playlist_slugs%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D=strings)
+problem.
