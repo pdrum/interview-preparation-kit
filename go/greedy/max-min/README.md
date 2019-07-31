@@ -1,0 +1,1 @@
+Solution to [Max Min problem](https://www.hackerrank.com/challenges/angry-children/problem)
