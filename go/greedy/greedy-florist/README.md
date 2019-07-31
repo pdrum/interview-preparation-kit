@@ -1,0 +1,1 @@
+Solution to [Greedy Florist problem](https://www.hackerrank.com/challenges/greedy-florist?h_l=interview&playlist_slugs%5B%5D=interview-preparation-kit&playlist_slugs%5B%5D=greedy-algorithms)
