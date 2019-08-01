@@ -8,26 +8,42 @@ import (
 func Test(t *testing.T) {
 	run(t, []TC{
 		{
-			In: "aahaxhxhxxahxx",
+			In:     "jjcddjggcdjd",
+			Wanted: "cgddjj",
+		},
+		{
+			In:     "beaa",
+			Wanted: "aeb",
+		},
+		{
+			In:     "djjcddjggbiigjhfghehhbgdigjicafgjcehhfgifadihiajgciagicdahcbajjbhifjiaajigdgdfhdiijjgaiejgegbbiigida",
+			Wanted: "aaaaabccigicgjihidfiejfijgidgbhhehgfhjgiibggjddjjd",
+		},
+		{
+			In:     "bdabaceadaedaaaeaecdeadababdbeaeeacacaba",
+			Wanted: "aaaaaabaaceededecbdb",
+		},
+		{
+			In:     "aahaxhxhxxahxx",
 			Wanted: "axhxhxa",
 		},
 		{
-			In: "eggegg",
+			In:     "eggegg",
 			Wanted: "egg",
 		},
 		{
-			In: "abcdefgabcdefg",
+			In:     "abcdefgabcdefg",
 			Wanted: "agfedcb",
 		},
 		{
-			In: "aeiouuoiea",
+			In:     "aeiouuoiea",
 			Wanted: "aeiou",
 		},
 	})
 }
 
 type TC struct {
-	In string
+	In     string
 	Wanted string
 }
 

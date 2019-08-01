@@ -135,7 +135,7 @@ func NewBreakpoint(iTracker IgnoranceTracker, mTracker MinTracker, i int, char r
 			sortedUniqueRunes: mTracker.sortedUniqueRunes,
 			minIndex:          mTracker.minIndex,
 		},
-		I: i,
+		I:           i,
 		IgnoredChar: char,
 	}
 }
@@ -170,13 +170,14 @@ func reverseShuffleMerge(s string) string {
 				mTracker = lastBreakpoint.MTracker
 			}
 			//println("Can't ignore => picked", string(char), "backtracking to", i)
+			iTracker.Visited(char)
 			result = append(result, char)
 			mTracker.PickedForA(char)
 			iTracker.PickedForA(char)
-			iTracker.Visited(char)
 			lastBreakpoint = nil
 		} else {
-			if lastBreakpoint == nil || char <= lastBreakpoint.IgnoredChar {
+			//println("chars needed in a ", string(char), iTracker.charsNeededInA[char])
+			if iTracker.charsNeededInA[char] > 0 && (lastBreakpoint == nil || (char < lastBreakpoint.IgnoredChar)) {
 				//println("Updating breakpoint")
 				lastBreakpoint = NewBreakpoint(iTracker, mTracker, i, char)
 			}
