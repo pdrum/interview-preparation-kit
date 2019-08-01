@@ -143,42 +143,35 @@ func NewBreakpoint(iTracker IgnoranceTracker, mTracker MinTracker, i int, char r
 // Complete the reverseShuffleMerge function below.
 func reverseShuffleMerge(s string) string {
 	charsNeeded := sumValues(countCharsInA(s))
-	//println(charsNeeded)
 	iTracker := NewIgnoranceTracker(s)
 	mTracker := NewMinTracker(s)
 	var result []rune
 	var lastBreakpoint *IgnoranceBreakpoint
 	for i := len([]rune(s)) - 1; i >= 0; i-- {
 		char := []rune(s)[i]
-		//println(i, "Loop on", string(char), "current A =>", string(result))
 		if len(result) == charsNeeded {
-			//println("Had enough")
 			break
 		}
 		if mTracker.CurrentMin() == char {
-			//println("This is current min => picked", string(char))
 			result = append(result, char)
 			mTracker.PickedForA(char)
 			iTracker.PickedForA(char)
 			iTracker.Visited(char)
 			lastBreakpoint = nil
 		} else if !iTracker.CanIgnore(char) {
-			if lastBreakpoint != nil && lastBreakpoint.IgnoredChar < char {
+			if lastBreakpoint != nil && lastBreakpoint.IgnoredChar <= char {
 				i = lastBreakpoint.I
 				char = []rune(s)[i]
 				iTracker = lastBreakpoint.ITracker
 				mTracker = lastBreakpoint.MTracker
 			}
-			//println("Can't ignore => picked", string(char), "backtracking to", i)
 			iTracker.Visited(char)
 			result = append(result, char)
 			mTracker.PickedForA(char)
 			iTracker.PickedForA(char)
 			lastBreakpoint = nil
 		} else {
-			//println("chars needed in a ", string(char), iTracker.charsNeededInA[char])
 			if iTracker.charsNeededInA[char] > 0 && (lastBreakpoint == nil || (char < lastBreakpoint.IgnoredChar)) {
-				//println("Updating breakpoint")
 				lastBreakpoint = NewBreakpoint(iTracker, mTracker, i, char)
 			}
 			iTracker.Visited(char)
