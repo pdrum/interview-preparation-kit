@@ -37,14 +37,14 @@ func countCharsInA(s string) map[rune]int {
 	return result
 }
 
-type MaxTracker struct {
+type MinTracker struct {
 	sortedUniqueRunes []rune
 	minIndex          int
 	charsNeededInA    map[rune]int
 }
 
-func NewMinTracker(s string) MaxTracker {
-	result := MaxTracker{}
+func NewMinTracker(s string) MinTracker {
+	result := MinTracker{}
 	result.charsNeededInA = countCharsInA(s)
 	for char := range result.charsNeededInA {
 		result.sortedUniqueRunes = append(result.sortedUniqueRunes, char)
@@ -56,7 +56,7 @@ func NewMinTracker(s string) MaxTracker {
 	return result
 }
 
-func (m *MaxTracker) CurrentMin() rune {
+func (m *MinTracker) CurrentMin() rune {
 	for {
 		if m.minIndex >= len(m.sortedUniqueRunes) {
 			panic("Index out of range")
@@ -72,7 +72,7 @@ func (m *MaxTracker) CurrentMin() rune {
 	}
 }
 
-func (m *MaxTracker) PickedForA(char rune) {
+func (m *MinTracker) PickedForA(char rune) {
 	if m.charsNeededInA[char] == 0 {
 		panic("char not needed for a")
 	}
@@ -109,45 +109,80 @@ func (i *IgnoranceTracker) Visited(char rune) {
 	i.countLeftInS[char]--
 }
 
-// count in s
-// a 4
-// h 4
-// x 6
+type IgnoranceBreakpoint struct {
+	ITracker    IgnoranceTracker
+	MTracker    MinTracker
+	I           int
+	IgnoredChar rune
+}
 
-// needed in A
-// a 2
-// h 2
-// x 3
+func cpMap(input map[rune]int) map[rune]int {
+	result := map[rune]int{}
+	for k, v := range input {
+		result[k] = v
+	}
+	return result
+}
 
-// Fix aahaxhxhxxahxx
-// solution should be axhxhxa
-// Current solution   axxhxah
+func NewBreakpoint(iTracker IgnoranceTracker, mTracker MinTracker, i int, char rune) *IgnoranceBreakpoint {
+	return &IgnoranceBreakpoint{
+		ITracker: IgnoranceTracker{
+			charsNeededInA: cpMap(iTracker.charsNeededInA),
+			countLeftInS:   cpMap(iTracker.countLeftInS),
+		},
+		MTracker: MinTracker{
+			charsNeededInA:    cpMap(mTracker.charsNeededInA),
+			sortedUniqueRunes: mTracker.sortedUniqueRunes,
+			minIndex:          mTracker.minIndex,
+		},
+		I: i,
+		IgnoredChar: char,
+	}
+}
 
 // Complete the reverseShuffleMerge function below.
 func reverseShuffleMerge(s string) string {
 	charsNeeded := sumValues(countCharsInA(s))
+	//println(charsNeeded)
 	iTracker := NewIgnoranceTracker(s)
 	mTracker := NewMinTracker(s)
 	var result []rune
+	var lastBreakpoint *IgnoranceBreakpoint
 	for i := len([]rune(s)) - 1; i >= 0; i-- {
 		char := []rune(s)[i]
-		//println("Loop on", string(char), "current A =>", string(result))
+		//println(i, "Loop on", string(char), "current A =>", string(result))
 		if len(result) == charsNeeded {
 			//println("Had enough")
 			break
 		}
 		if mTracker.CurrentMin() == char {
-			//println("This is current min => picked")
+			//println("This is current min => picked", string(char))
 			result = append(result, char)
 			mTracker.PickedForA(char)
 			iTracker.PickedForA(char)
+			iTracker.Visited(char)
+			lastBreakpoint = nil
 		} else if !iTracker.CanIgnore(char) {
-			//println("Can't ignore => picked")
+			if lastBreakpoint != nil && lastBreakpoint.IgnoredChar < char {
+				i = lastBreakpoint.I
+				char = []rune(s)[i]
+				iTracker = lastBreakpoint.ITracker
+				mTracker = lastBreakpoint.MTracker
+			}
+			//println("Can't ignore => picked", string(char), "backtracking to", i)
 			result = append(result, char)
 			mTracker.PickedForA(char)
 			iTracker.PickedForA(char)
+			iTracker.Visited(char)
+			lastBreakpoint = nil
+		} else {
+			if lastBreakpoint == nil || char <= lastBreakpoint.IgnoredChar {
+				//println("Updating breakpoint")
+				lastBreakpoint = NewBreakpoint(iTracker, mTracker, i, char)
+			}
+			iTracker.Visited(char)
 		}
-		iTracker.Visited(char)
+
 	}
 	return string(result)
 }
