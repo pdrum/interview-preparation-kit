@@ -1,0 +1,1 @@
+Solution to [Hash Tables: Ice Cream Parlor](https://www.hackerrank.com/challenges/ctci-ice-cream-parlor)
